@@ -42,20 +42,42 @@ const Main = () => {
   };
 
   return (
-    <div
-      className={`d-flex justify-content-center align-items-center flex-column ${style["app-container"]}`}
-    >
-      <div className="card"> </div>{" "}
-      <input type="text" ref={city} onChange={autoCompleteCities} />
-      {!cityList.length !== 0 &&
-        cityList
-          .filter((data) => data.name.includes(`${city.current.value}`))
-          .map((item, index) => (
-            <button onClick={handleClick(item.name)} key={index}>
-              
-              {item.name}
-            </button>
-          ))}
+    <div className="d-flex justify-content-center align-items-center flex-column">
+      <div
+        className={`d-flex justify-content-center align-items-center flex-column ${style["app-container"]}`}
+      >
+        <div className="card"> </div>{" "}
+        <input type="text" ref={city} onChange={autoCompleteCities} />
+        {!cityList.length !== 0 &&
+          cityList
+            .filter((data) => data.name.includes(`${city.current.value}`))
+            .map((item, index) => (
+              <button onClick={handleClick(item.name)} key={index}>
+                {item.name}
+              </button>
+            ))}
+      </div>
+      <div className={`${style["card-wrapper"]} shadow-lg`}>
+        <div className="header mb-5 text-center">
+          <span>https://github.com/metehankasapp</span>
+        </div>
+        <div className="h-100 d-flex align-items-baseline justify-content-center">
+          <div
+            className={`${style["card-inner"]} d-flex justify-content-center align-items-center flex-column`}
+          >
+            <h4 className={`${style["city-header"]}`}>Harlem</h4>
+            <span className={style.date}>Tuesday, January 10, 2019</span>
+            <span className={style.degree}>15&#176;<span className={`${style.degreec}`}>c</span></span>
+            <span className={style.hrr}>--------------</span>
+            <span className={style.status}>Cloudy</span>
+            <p className={style.maxmin}>
+              <span>25&#176;c</span>
+              <span className="mx-2">/</span>
+              <span>28&#176;c</span>
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
