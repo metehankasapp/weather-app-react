@@ -9,10 +9,11 @@ function App() {
   const api = {
     token :"33e965c0053ca2b54fb3424bb1cbd4ca",
   }
-  const citiesUrl  = "https://countriesnow.space/api/v0.1/countries/population/cities";
+
+  
   const data = {
     api,
-    citiesUrl
+    
   };
 
   return (
