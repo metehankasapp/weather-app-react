@@ -20,20 +20,21 @@ const Main = () => {
   const useCities = () => {
     fetch(`${citiesUrl}`)
       .then((response) => response.json())
-      .then((cities) => setCityList(cities.data));
+      .then((cities) => setCityList(cities.data))
   };
 
   return (
     <div
       className={`d-flex justify-content-center align-items-center flex-column ${style["app-container"]}`}
     >
-      <div className="card"> </div>{" "}
-      <input type="text" ref={city} onChange={useCities} />{" "}
-      <button onClick={useCityWeather}> Get Data </button>{" "}
+      <div className="card"></div>
+      <input type="text" ref={city} onChange={useCities}/>
+      <button onClick={useCityWeather}>Get Data</button>
+
       {!cityList.length !== 0 &&
         cityList
           .filter((data) => data.city.includes(`${city.current.value}`))
-          .map((item) => <div> {item.city} </div>)}{" "}
+          .map((item) => <div>{item.city}</div>)}
     </div>
   );
 };
