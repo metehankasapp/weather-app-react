@@ -6,12 +6,12 @@ By searching the name of the city or district you want, you can see the instanta
 
 <b>Technologies I use:</b>
 
-1-React
-5-Bootstrap
+1-React <br/>
+3-Bootstrap
 
 <b>Weather API : https://openweathermap.org/api</b>
 
 Totally Responsive!
 
-Project Demo: https://react-weather-app-509e1.web.app/
+Project Demo: https://react-weather-app-509e1.web.app/<br/>
 Project Source Code: https://github.com/metehankasapp/weather-app-react
