@@ -13,7 +13,6 @@ function App() {
   
   const data = {
     api,
-    
   };
 
   return (

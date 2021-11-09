@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { MainContext, useContext } from "../context/authContext";
 /*CSS İMPORT*/
 import style from "./Main.module.css";
@@ -6,7 +6,8 @@ import "bootstrap/dist/css/bootstrap.css";
 
 const Main = () => {
   const weatherTypes = {
-    Clouds: "https://wallpaperaccess.com/full/1216313.jpg",
+    Clouds:
+      "https://cdn5.vectorstock.com/i/1000x1000/26/99/paper-clouds-and-blue-sky-background-vector-21352699.jpg",
     Rain: "https://wallpaperboat.com/wp-content/uploads/2021/03/16/71409/rain-minimalist-04.jpg",
     Mist: "https://img.freepik.com/free-vector/minimalist-vector-illustration-skyscrapers-clouds-city-highrises-misty-fog_93208-972.jpg?size=626&ext=jpg",
     Clear:
@@ -46,114 +47,129 @@ const Main = () => {
 
   const city = useRef();
   const { api } = useContext(MainContext);
-  const [cityList, setCityList] = useState([]);
-  const [curCity, SetCurCity] = useState({
-    name: "Harlem",
-    date: formattedDate,
-    degree: "55",
-    status: "Cloudy",
-    max: "28",
-    min: "30",
-  });
-
-  /* const useCities = () => {
-    fetch(`${citiesUrl}`)
-      .then((response) => response.json())
-      .then((cities) => setCityList(cities.data));
-  }; */
+  const [curCity, SetCurCity] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [cityName, setCityName] = useState("İstanbul");
 
   function pad2(n) {
     return (n < 10 ? "0" : "") + n;
   }
 
-  const autoCompleteCities = () =>
-    fetch(
-      `https://spott.p.rapidapi.com/places/autocomplete?limit=100&skip=0&q=${city.current.value}&type=CITY`,
-      {
-        method: "GET",
-        headers: {
-          "x-rapidapi-host": "spott.p.rapidapi.com",
-          "x-rapidapi-key":
-            "8e11a311dbmsh8ae6dc7fc1a64e7p1d39dajsnd34f31891721",
-        },
-      }
-    )
-      .then((response) => response.json())
-      .then((data) => setCityList(data))
-      .catch((err) => {
-        console.error(err);
-      });
-
   const handleClick = (value) => () => {
+    setError();
+
     fetch(
       `https://api.openweathermap.org/data/2.5/weather?q=${value}&appid=${api.token}`
     )
       .then((response) => response.json())
-      .then((data) =>
-
-
-        {console.log(data.cod);
-          if(data.cod === 200){
-            SetCurCity({
-              name: data.name,
-              date: formattedDate,
-              degree: (Number(data.main.temp) - 273.15).toFixed(0),
-              statusmain:data.weather[0].main,
-              status:
-                data.weather[0].main.charAt(0).toUpperCase() +
-                data.weather[0].description.slice(1),
-              max: (Number(data.main.temp_max) - 273.15).toFixed(0),
-              min: (Number(data.main.temp_min) - 273.15).toFixed(0),
-            })
-        }else{
-          console.log(data.message) /*ERROR MESSAGE OLUŞTUR*/
-        }}
-        
-      );
+      .then((data) => {
+        if (data.cod === 200) {
+          SetCurCity({
+            name: data.name,
+            date: formattedDate,
+            degree: (Number(data.main.temp) - 273.15).toFixed(0),
+            statusmain: data.weather[0].main,
+            status:
+              data.weather[0].main.charAt(0).toUpperCase() +
+              data.weather[0].description.slice(1),
+            max: (Number(data.main.temp_max) - 273.15).toFixed(0),
+            min: (Number(data.main.temp_min) - 273.15).toFixed(0),
+          });
+        } else {
+          setError(data.message);
+        }
+      });
   };
 
-  
+  const autoCompleteCities = () => {
+    setCityName(city.current.value);
+  };
+
+  useEffect(() => {
+    fetch(
+      `https://api.openweathermap.org/data/2.5/weather?q=İstanbul&appid=${api.token}`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.cod === 200) {
+          setIsLoading(false);
+          SetCurCity({
+            name: data.name,
+            date: formattedDate,
+            degree: (Number(data.main.temp) - 273.15).toFixed(0),
+            statusmain: data.weather[0].main,
+            status:
+              data.weather[0].main.charAt(0).toUpperCase() +
+              data.weather[0].description.slice(1),
+            max: (Number(data.main.temp_max) - 273.15).toFixed(0),
+            min: (Number(data.main.temp_min) - 273.15).toFixed(0),
+          });
+        }
+      });
+  }, []);
+
   return (
     <div className="d-flex justify-content-center align-items-center flex-column">
       <div
-        className={`d-flex justify-content-center align-items-center flex-column ${style["app-container"]}`}
+        className={`d-flex justify-content-center align-items-center flex-column`}
       >
-        <div className="card"> </div>{" "}
-        <input type="text" ref={city} onChange={autoCompleteCities} />
-        {!cityList.length !== 0 &&
-          cityList
-            .filter((data) => data.name.includes(`${city.current.value}`))
-            .map((item, index) => (
-              <button onClick={handleClick(item.name)} key={index}>
-                {item.name}
-              </button>
-            ))}
         <div
           className={`${style["card-wrapper"]} shadow-lg`}
-          style={{ backgroundImage: `url(${weatherTypes[`${curCity.statusmain}`]})` }}
+          style={{
+            backgroundImage: `url(${weatherTypes[`${curCity.statusmain}`]})`,
+          }}
         >
-          <div className="header mb-5 text-center">
-            <a href="https://github.com/metehankasapp" target="_blank" rel="noreferrer">https://github.com/metehankasapp</a>
-          </div>
-          <div className="h-100 d-flex align-items-baseline justify-content-center">
-            <div
-              className={`${style["card-inner"]} d-flex justify-content-center align-items-center flex-column`}
-            >
-              <h4 className={`${style["city-header"]}`}>{curCity.name}</h4>
-              <span className={style.date}>{curCity.date}</span>
-              <span className={style.degree}>
-                {curCity.degree}&#176;
-                <span className={`${style.degreec}`}>c</span>
-              </span>
-              <span className={style.hrr}>--------------</span>
-              <span className={style.status}>{curCity.status}</span>
-              <p className={style.maxmin}>
-                <span className={style.max}>{curCity.max}&#176;c</span>
-                <span className="mx-2">/</span>
-                <span className={style.min}>{curCity.min}&#176;c</span>
-              </p>
+          {isLoading ? (
+            <img
+              className={`${style.loading} m-0`}
+              alt=""
+              src="https://c.tenor.com/I6kN-6X7nhAAAAAj/loading-buffering.gif"
+            />
+          ) : (
+            <div className={`d-flex justify-content-center align-items-center flex-column`}>
+              <div className={`${style.header} mb-5 text-center`}>
+                <a
+                  href="https://github.com/metehankasapp"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  https://github.com/metehankasapp
+                </a>
+              </div>
+              <div className={`${style["search-ctr"]}`}>
+                <input
+                  type="text"
+                  ref={city}
+                  onChange={autoCompleteCities}
+                  placeholder="City"
+                />
+                <button onClick={handleClick(cityName)}>Search</button>
+              </div>
+              {error && (
+                <p className={`${style.errormsg} m-0 text-danger`}>{error}</p>
+              )}
+              <div className="h-100 d-flex align-items-center justify-content-baseline flex-column">
+                <div
+                  className={`${style["card-inner"]} d-flex justify-content-center align-items-center flex-column`}
+                >
+                  <h4 className={`${style["city-header"]}`}>{curCity.name}</h4>
+                  <span className={style.date}>{curCity.date}</span>
+                  <span className={style.degree}>
+                    {curCity.degree}&#176;
+                    <span className={`${style.degreec}`}>c</span>
+                  </span>
+                  <span className={style.hrr}>--------------</span>
+                  <span className={style.status}>{curCity.status}</span>
+                  <p className={style.maxmin}>
+                    <span className={style.max}>{curCity.max}&#176;c</span>
+                    <span className="mx-2">/</span>
+                    <span className={style.min}>{curCity.min}&#176;c</span>
+                  </p>
+                </div>
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>
