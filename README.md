@@ -1,16 +1,20 @@
 Hi ! Today I coded a weather app design I found on the internet using React and Weather API.
 
-<b>Application usage:</b>
+## Screenshot
+
+![ Project Screenshot](./screenshot.png)
+
+## <b>Application usage:</b>
 
 By searching the name of the city or district you want, you can see the instantaneous weather conditions and the maximum minimum weather conditions.
 
 
-<b>Technologies I use: </b>
+## <b>Technologies I use: </b>
 
 1-React <br/>
 3-Bootstrap
 
-<b>Weather API : https://openweathermap.org/api</b>
+## <b>Weather API : https://openweathermap.org/api</b>
 
 Totally Responsive!
 
